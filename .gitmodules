@@ -1,0 +1,6 @@
+[submodule "submodules/kanboard"]
+	path = submodules/kanboard
+	url = https://github.com/kanboard/kanboard.git
+[submodule "submodules/kanboard_documentation"]
+	path = submodules/kanboard_documentation
+	url = https://github.com/kanboard/documentation.git
