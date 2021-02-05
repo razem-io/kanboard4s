@@ -22,3 +22,8 @@ case class Kanboard_Request_getUser(user_id: String) extends KanboardApiCall[Kan
 }
 
 case class Kanboard_Response_getUser(name: String, email: String, role: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String)
+
+object Kanboard_Response_getUser {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getUser] = macroRW
+}

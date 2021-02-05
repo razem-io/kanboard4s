@@ -22,3 +22,8 @@ case class Kanboard_Request_enableUser(user_id: String) extends KanboardApiCall[
 }
 
 case class Kanboard_Response_enableUser(result: Boolean)
+
+object Kanboard_Response_enableUser {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_enableUser] = macroRW
+}

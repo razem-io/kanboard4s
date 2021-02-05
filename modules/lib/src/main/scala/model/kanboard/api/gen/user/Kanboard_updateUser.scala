@@ -27,3 +27,8 @@ case class Kanboard_Request_updateUser(id: String, role: String) extends Kanboar
 }
 
 case class Kanboard_Response_updateUser(result: Boolean)
+
+object Kanboard_Response_updateUser {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_updateUser] = macroRW
+}

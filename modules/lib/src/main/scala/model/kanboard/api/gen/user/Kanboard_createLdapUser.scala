@@ -19,10 +19,15 @@ import model.kanboard.api.KanboardApiCall
 * anonymous mode.
 **/
 
-case class Kanboard_Request_createLdapUser(username: String) extends KanboardApiCall[Kanboard_Response_createLdapUser] {
+case class Kanboard_Request_createLdapUser() extends KanboardApiCall[Kanboard_Response_createLdapUser] {
   override val rpcMethodName: String = "createLdapUser"
 
-  override val rpcParameters: Seq[(String, String)] = Seq("username" -> username)
+  override val rpcParameters: Seq[(String, String)] = Seq()
 }
 
 case class Kanboard_Response_createLdapUser(result: Int)
+
+object Kanboard_Response_createLdapUser {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_createLdapUser] = macroRW
+}

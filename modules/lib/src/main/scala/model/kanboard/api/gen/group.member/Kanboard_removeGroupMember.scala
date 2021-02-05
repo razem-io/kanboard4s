@@ -23,3 +23,8 @@ case class Kanboard_Request_removeGroupMember() extends KanboardApiCall[Kanboard
 }
 
 case class Kanboard_Response_removeGroupMember(result: Boolean)
+
+object Kanboard_Response_removeGroupMember {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_removeGroupMember] = macroRW
+}

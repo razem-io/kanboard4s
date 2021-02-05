@@ -23,6 +23,12 @@ case class Kanboard_Request_getAllUsers() extends KanboardApiCall[Kanboard_Respo
 
 case class Kanboard_Response_getAllUsers_Entries(name: String, email: String, role: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String])
 object Kanboard_Response_getAllUsers_Entries {
-  implicit val jsonFormat:Format[Kanboard_Response_getAllUsers_Entries] = Json.format[Kanboard_Response_getAllUsers_Entries]
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getAllUsers_Entries] = macroRW
 }
 case class Kanboard_Response_getAllUsers(result: Array[Kanboard_Response_getAllUsers_Entries])
+
+object Kanboard_Response_getAllUsers {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getAllUsers] = macroRW
+}

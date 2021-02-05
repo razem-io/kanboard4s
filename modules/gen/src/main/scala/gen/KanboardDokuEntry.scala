@@ -61,6 +61,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
   }
 
   def genJsonFormatObject(objectName: String): String = s"""object $objectName {
-                                                   |  implicit val jsonFormat:Format[$objectName] = Json.format[$objectName]
+                                                   |  import upickle.default.{ReadWriter => RW, macroRW}
+                                                   |  implicit val rw: RW[$objectName] = macroRW
                                                    |}""".stripMargin
 }

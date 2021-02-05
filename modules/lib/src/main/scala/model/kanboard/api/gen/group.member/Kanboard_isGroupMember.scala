@@ -23,3 +23,8 @@ case class Kanboard_Request_isGroupMember() extends KanboardApiCall[Kanboard_Res
 }
 
 case class Kanboard_Response_isGroupMember(result: Boolean)
+
+object Kanboard_Response_isGroupMember {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_isGroupMember] = macroRW
+}

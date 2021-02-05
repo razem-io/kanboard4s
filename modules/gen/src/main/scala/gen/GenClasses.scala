@@ -74,8 +74,8 @@ object GenClasses {
         genFile.appendText(entry.caseClassRequest)
         genFile.appendText("\n")
         genFile.appendText(entry.caseClassResponse)
-//        genFile.appendText("\n")
-//        genFile.appendText(entry.objectResponse)
+        genFile.appendText("\n")
+        genFile.appendText(entry.objectResponse)
       })
     }
 

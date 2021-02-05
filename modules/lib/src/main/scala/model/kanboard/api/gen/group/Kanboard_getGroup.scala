@@ -22,3 +22,8 @@ case class Kanboard_Request_getGroup() extends KanboardApiCall[Kanboard_Response
 }
 
 case class Kanboard_Response_getGroup(id: String, external_id: String, name: String)
+
+object Kanboard_Response_getGroup {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getGroup] = macroRW
+}

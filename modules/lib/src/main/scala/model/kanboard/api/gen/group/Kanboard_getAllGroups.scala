@@ -20,6 +20,12 @@ case class Kanboard_Request_getAllGroups() extends KanboardApiCall[Kanboard_Resp
 
 case class Kanboard_Response_getAllGroups_Entries(id: String, external_id: String, name: String)
 object Kanboard_Response_getAllGroups_Entries {
-  implicit val jsonFormat:Format[Kanboard_Response_getAllGroups_Entries] = Json.format[Kanboard_Response_getAllGroups_Entries]
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getAllGroups_Entries] = macroRW
 }
 case class Kanboard_Response_getAllGroups(result: Array[Kanboard_Response_getAllGroups_Entries])
+
+object Kanboard_Response_getAllGroups {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getAllGroups] = macroRW
+}

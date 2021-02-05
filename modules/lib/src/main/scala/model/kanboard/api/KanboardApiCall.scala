@@ -1,6 +1,10 @@
 package model.kanboard.api
 
+
 import scala.concurrent.{ExecutionContext, Future}
+import upickle.default._
+
+import scala.util.{Failure, Success, Try}
 
 trait KanboardApiCall [A] {
 
@@ -13,15 +17,19 @@ trait KanboardApiCall [A] {
     rpcParameters: _ *
   )
 
-  def parseRpcResponse(rawJson: String)(implicit jsonFormat: Format[A]): Option[A] = Json
-    .parse(rawJson)
-    .asOpt[A]
+  def parseRpcResponse(rawJson: String)(implicit jsonReader: Reader[A]): Try[A] = Try {
+    read[A](rawJson)
+  }
 
   def execute(implicit
               ec: ExecutionContext,
-              jsonFormat: Format[A],
+              jsonFormat: Reader[A],
               executeRequest: JsonRPCRequest => Future[String]
-             ): FutureO[A] = FutureO(
-    executeRequest(rpcRequest).map(parseRpcResponse)
-  )
+             ): Future[Either[ResponseError, A]] =
+    executeRequest(rpcRequest)
+      .map(b => {
+        parseRpcResponse(b).toEither.left.map(ResponseError(b, _))
+      })
 }
+
+case class ResponseError(body: String, ex: Throwable)

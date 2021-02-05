@@ -24,3 +24,8 @@ case class Kanboard_Request_updateGroup(group_id: String, name: String, external
 }
 
 case class Kanboard_Response_updateGroup(result: Boolean)
+
+object Kanboard_Response_updateGroup {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_updateGroup] = macroRW
+}

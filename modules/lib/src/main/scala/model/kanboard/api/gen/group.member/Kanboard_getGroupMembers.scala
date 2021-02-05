@@ -23,6 +23,12 @@ case class Kanboard_Request_getGroupMembers() extends KanboardApiCall[Kanboard_R
 
 case class Kanboard_Response_getGroupMembers_Entries(group_id: String, name: Option[String], notifications_filter: String, email: Option[String], role: String, username: String, timezone: Option[String], notifications_enabled: String, user_id: String, is_project_admin: String, is_ldap_user: String, id: String, language: Option[String], disable_login_form: String, lock_expiration_date: String, gitlab_id: Option[String], nb_failed_login: String)
 object Kanboard_Response_getGroupMembers_Entries {
-  implicit val jsonFormat:Format[Kanboard_Response_getGroupMembers_Entries] = Json.format[Kanboard_Response_getGroupMembers_Entries]
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getGroupMembers_Entries] = macroRW
 }
 case class Kanboard_Response_getGroupMembers(result: Array[Kanboard_Response_getGroupMembers_Entries])
+
+object Kanboard_Response_getGroupMembers {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getGroupMembers] = macroRW
+}
