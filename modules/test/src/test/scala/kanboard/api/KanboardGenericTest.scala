@@ -1,6 +1,6 @@
 package kanboard.api
 
-import com.dimafeng.testcontainers.{ForEachTestContainer, GenericContainer}
+import com.dimafeng.testcontainers.{ForAllTestContainer, ForEachTestContainer, GenericContainer}
 import model.kanboard.api.JsonRPCRequest
 import model.kanboard.api.gen.user.Kanboard_Request_createUser
 import okhttp3.{Credentials, MediaType, OkHttpClient, Request, RequestBody}
@@ -9,9 +9,17 @@ import org.testcontainers.containers.wait.strategy.Wait
 
 import scala.concurrent.Future
 
-trait KanboardGenericTest extends AsyncFunSuite with ForEachTestContainer {
+trait KanboardForEachTest extends KanboardGenericTest with ForEachTestContainer {
+  override val container: GenericContainer = kanboardContainer
+}
 
-  override val container: GenericContainer = GenericContainer(
+trait KanboardForAllTest extends KanboardGenericTest with ForAllTestContainer {
+  override val container: GenericContainer = kanboardContainer
+}
+
+trait KanboardGenericTest extends AsyncFunSuite  {
+
+  val kanboardContainer: GenericContainer = GenericContainer(
     dockerImage = "kanboard/kanboard:latest",
     exposedPorts = Seq(80),
     waitStrategy = Wait.forHttp("/")
@@ -21,7 +29,7 @@ trait KanboardGenericTest extends AsyncFunSuite with ForEachTestContainer {
   implicit val rw: RW[JsonRPCRequest] = macroRW
   implicit val rw_Kanboard_Request_createUser: RW[Kanboard_Request_createUser] = macroRW
 
-  private def endpoint = s"http://localhost:${container.mappedPort(80)}/jsonrpc.php"
+  private def endpoint = s"http://localhost:${kanboardContainer.mappedPort(80)}/jsonrpc.php"
 
   private val client: OkHttpClient = new OkHttpClient()
 

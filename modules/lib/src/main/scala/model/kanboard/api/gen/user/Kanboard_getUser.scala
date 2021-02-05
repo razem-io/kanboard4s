@@ -21,7 +21,12 @@ case class Kanboard_Request_getUser(user_id: String) extends KanboardApiCall[Kan
   override val rpcParameters: Seq[(String, String)] = Seq("user_id" -> user_id)
 }
 
-case class Kanboard_Response_getUser(name: String, email: String, role: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String)
+case class Kanboard_Response_getUser_Result(name: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String, email: String, role: String)
+object Kanboard_Response_getUser_Result {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getUser_Result] = macroRW
+}
+case class Kanboard_Response_getUser(result: Kanboard_Response_getUser_Result)
 
 object Kanboard_Response_getUser {
   import upickle.default.{ReadWriter => RW, macroRW}

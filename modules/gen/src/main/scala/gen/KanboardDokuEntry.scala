@@ -35,7 +35,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
 
   def objectResponse: String = genJsonFormatObject(classNameResponse)
 
-  def matchResult(r: Value, className: String = classNameResponse): String = {
+  def matchResult(r: Value, className: String = classNameResponse, returnResultClass: Boolean = true): String = {
     if(r.numOpt.isDefined) {
       s"""case class $className(result: Int)""".stripMargin
     } else if(r.boolOpt.isDefined) {
@@ -46,15 +46,21 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
         else if(value.isNull) name -> "Option[String]"
         else throw new NotImplementedError()
       }.toMap
-      s"""case class $className(${params.map(t => t._1 + ": " + t._2).mkString(", ")})""".stripMargin
+      val resultClassName = className + "_Result"
+      val s1 = s"""case class $resultClassName(${params.map(t => t._1 + ": " + t._2).mkString(", ")})
+         |${genJsonFormatObject(resultClassName)}""".stripMargin
+      if(returnResultClass)
+         s"""$s1
+           |case class $className(result: $resultClassName)""".stripMargin
+      else
+        s1
     } else if(r.arrOpt.isDefined) {
       val entryClassName = className + "_Entries"
-      val companionClass = matchResult(r.arr.head, entryClassName)
-      val companionObject = genJsonFormatObject(entryClassName)
+      val entryResultClassName = className + "_Entries_Result"
+      val companionClass = matchResult(r.arr.head, entryClassName, returnResultClass = false)
 
       companionClass + "\n" +
-      companionObject + "\n" +
-        s"""case class $className(result: Array[$entryClassName])""".stripMargin
+        s"""case class $className(result: Array[$entryResultClassName])""".stripMargin
     }  else {
       throw new NotImplementedError(r.toString())
     }

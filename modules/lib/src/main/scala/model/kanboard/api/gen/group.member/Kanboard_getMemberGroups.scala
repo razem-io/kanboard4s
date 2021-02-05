@@ -21,12 +21,12 @@ case class Kanboard_Request_getMemberGroups() extends KanboardApiCall[Kanboard_R
   override val rpcParameters: Seq[(String, String)] = Seq()
 }
 
-case class Kanboard_Response_getMemberGroups_Entries(id: String, name: String)
-object Kanboard_Response_getMemberGroups_Entries {
+case class Kanboard_Response_getMemberGroups_Entries_Result(id: String, name: String)
+object Kanboard_Response_getMemberGroups_Entries_Result {
   import upickle.default.{ReadWriter => RW, macroRW}
-  implicit val rw: RW[Kanboard_Response_getMemberGroups_Entries] = macroRW
+  implicit val rw: RW[Kanboard_Response_getMemberGroups_Entries_Result] = macroRW
 }
-case class Kanboard_Response_getMemberGroups(result: Array[Kanboard_Response_getMemberGroups_Entries])
+case class Kanboard_Response_getMemberGroups(result: Array[Kanboard_Response_getMemberGroups_Entries_Result])
 
 object Kanboard_Response_getMemberGroups {
   import upickle.default.{ReadWriter => RW, macroRW}

@@ -21,7 +21,12 @@ case class Kanboard_Request_getUserByName(username: String) extends KanboardApiC
   override val rpcParameters: Seq[(String, String)] = Seq("username" -> username)
 }
 
-case class Kanboard_Response_getUserByName(name: String, email: String, role: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String)
+case class Kanboard_Response_getUserByName_Result(name: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String, email: String, role: String)
+object Kanboard_Response_getUserByName_Result {
+  import upickle.default.{ReadWriter => RW, macroRW}
+  implicit val rw: RW[Kanboard_Response_getUserByName_Result] = macroRW
+}
+case class Kanboard_Response_getUserByName(result: Kanboard_Response_getUserByName_Result)
 
 object Kanboard_Response_getUserByName {
   import upickle.default.{ReadWriter => RW, macroRW}
