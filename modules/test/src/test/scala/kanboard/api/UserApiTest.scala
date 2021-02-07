@@ -1,6 +1,6 @@
 package kanboard.api
 
-import model.kanboard.api.gen.user.{Kanboard_Request_createUser, Kanboard_Request_getAllUsers, Kanboard_Request_getUserByName}
+import model.kanboard.api.gen.user._
 
 class UserApiTest extends KanboardForAllTest {
 
@@ -19,6 +19,15 @@ class UserApiTest extends KanboardForAllTest {
       assert(responseTest2.isRight)
       assert(responseTest1.exists(_.result == expectedUser2Id))
       assert(responseTest2.exists(_.result == expectedUser3Id))
+    }
+  }
+
+  test("getUser") {
+    for {
+      response <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
+    } yield {
+      assert(response.isRight)
+      assert(response.exists(_.result.username == expectedUsername2))
     }
   }
 
@@ -42,6 +51,58 @@ class UserApiTest extends KanboardForAllTest {
       assert(response.exists(_.result.nonEmpty))
       assert(response.exists(_.result.exists(_.id == expectedUser2Id.toString)))
       assert(response.exists(_.result.exists(_.id == expectedUser3Id.toString)))
+    }
+  }
+
+  test("isActiveUser") {
+    for {
+      response <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+    } yield {
+      assert(response.isRight)
+      assert(response.exists(_.result))
+    }
+  }
+
+  test("disableUser") {
+    for {
+      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+      response <- Kanboard_Request_disableUser(expectedUser2Id.toString).execute
+      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+    } yield {
+      assert(responseActiveBefore.isRight)
+      assert(response.isRight)
+      assert(responseActiveAfter.isRight)
+      assert(responseActiveBefore.exists(_.result))
+      assert(!responseActiveAfter.exists(_.result))
+    }
+  }
+
+  test("enableUser") {
+    for {
+      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+      response <- Kanboard_Request_enableUser(expectedUser2Id.toString).execute
+      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+    } yield {
+      assert(responseActiveBefore.isRight)
+      assert(response.isRight)
+      assert(responseActiveAfter.isRight)
+      assert(!responseActiveBefore.exists(_.result))
+      assert(responseActiveAfter.exists(_.result))
+    }
+  }
+
+  test("removeUser") {
+    for {
+      responseBefore <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
+      response <- Kanboard_Request_removeUser(expectedUser2Id.toString).execute
+      responseAfter <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
+    } yield {
+      assert(responseBefore.isRight)
+      assert(response.isRight)
+      assert(responseAfter.isRight)
+      assert(response.exists(_.result))
+      assert(responseBefore.exists(_.result.username == expectedUsername2))
+      assert(responseAfter.exists(_.result == null))
     }
   }
 }
