@@ -3,14 +3,46 @@ package gen
 
 import ujson.Value
 
-import scala.util.Try
+import scala.util.matching.Regex
+
+
+object KanboardDokuEntry {
+  case class KanboardParameter(name: String, foundType: String, optional: Boolean) {
+    val pretty: String = s"$name: ${if(optional)"Option[" + foundType + "] = None" else foundType}"
+
+    val jsonParamWrapper: String = jsonParamWrapper(name)
+
+    def jsonParamWrapper(name: String): String = foundType match {
+      case "String" => s"StringParam($name)"
+      case "Int" => s"IntParam($name)"
+    }
+  }
+
+  val requestParamsRegex: Regex = """-\s+\*\*(\w*)\*\*([\s\S]*?)\(([\s\S]*?)\)""".r
+}
 
 case class KanboardDokuEntry(methodName: String, docu: String, request: String, response: String, packageName: String) {
-  def requestParams: Set[String] = Try(ujson.read(request).obj("params")).map(_.obj.keys.toSet).getOrElse(Set.empty)
+  import KanboardDokuEntry._
+
+  //  def requestParams: Set[String] = Try(ujson.read(request).obj("params")).map(_.obj.keys.toSet).getOrElse(Set.empty)
+  def requestParams: List[KanboardParameter] = requestParamsRegex.findAllMatchIn(docu).map { m =>
+    val name = m.group(1)
+    // val comment = m.group(2)
+    val additionalInfo = m.group(3).split(',').map(_.trim)
+
+    val foundType = additionalInfo.head.capitalize match {
+      case "Integer" => "Int"
+      case x => x
+    }
+    val optional = additionalInfo.lift(1).exists(_.contains("optional"))
+
+    KanboardParameter(name, foundType, optional)
+  }.toList
 
   val packageHeader: String = s"package $packageName"
   val imports: String = """
                           |import model.kanboard.api.KanboardApiCall
+                          |import model.kanboard.api.JsonRPCRequest._
                           |""".stripMargin
 
   def docuComment: String = docu.linesIterator.map(l => "* " + l).mkString("/**\n" , "\n", "\n**/")
@@ -18,14 +50,30 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
   def className: String = s"Kanboard_$methodName"
   def classNameRequest: String = s"Kanboard_Request_$methodName"
   def classNameResponse: String = s"Kanboard_Response_$methodName"
-  def caseClassRequest: String =
+  def caseClassRequest: String = {
+    /**
+     * Seq("username" -> StringParam(username), "password" -> StringParam(password)) ++
+    Seq(
+      name.map("name" -> StringParam(_)), email.map("email" -> StringParam(_)), role.map("role" -> StringParam(_))
+    ).flatten
+     */
     s"""
-       |case class $classNameRequest(${requestParams.map(_ + ": String").mkString(", ")}) extends KanboardApiCall[$classNameResponse] {
+       |case class $classNameRequest(${requestParams.map(_.pretty).mkString(", ")}) extends KanboardApiCall[$classNameResponse] {
        |  override val rpcMethodName: String = "$methodName"
        |
-       |  override val rpcParameters: Seq[(String, String)] = Seq(${requestParams.map(p => "\"" + p + "\"" + " -> " + p).mkString(", ")})
+       |  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = ${
+      val (optional, nonOptional) = requestParams.partition(_.optional)
+
+      val s1 = if(nonOptional.nonEmpty) nonOptional.map(p => "\"" + p.name + "\"" + " -> " + p.jsonParamWrapper).mkString("Seq(", ", ", ")") else ""
+      val s2 = if(nonOptional.nonEmpty && optional.nonEmpty) " ++ " else ""
+      val s3 = if(optional.nonEmpty) optional.map(p => p.name + ".map(\"" + p.name + "\"" + " -> " + p.jsonParamWrapper("_") + ")").mkString("Seq(", ", ", ").flatten") else ""
+      val s4 = if(nonOptional.isEmpty && optional.isEmpty) "Seq()" else ""
+
+      s1 + s2 + s3 +  s4
+    }
        |}
        |""".stripMargin
+  }
 
   def caseClassResponse: String = {
     val r: Value = ujson.read(response).obj("result")

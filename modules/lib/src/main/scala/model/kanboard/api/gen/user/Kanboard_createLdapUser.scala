@@ -1,5 +1,6 @@
 package model.kanboard.api.gen.user
 import model.kanboard.api.KanboardApiCall
+import model.kanboard.api.JsonRPCRequest._
 
 /**
 * GENERATED FILE - Any changes will be overwritten.
@@ -19,10 +20,10 @@ import model.kanboard.api.KanboardApiCall
 * anonymous mode.
 **/
 
-case class Kanboard_Request_createLdapUser() extends KanboardApiCall[Kanboard_Response_createLdapUser] {
+case class Kanboard_Request_createLdapUser(username: String) extends KanboardApiCall[Kanboard_Response_createLdapUser] {
   override val rpcMethodName: String = "createLdapUser"
 
-  override val rpcParameters: Seq[(String, String)] = Seq()
+  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("username" -> StringParam(username))
 }
 
 case class Kanboard_Response_createLdapUser(result: Int)

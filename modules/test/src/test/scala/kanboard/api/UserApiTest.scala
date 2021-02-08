@@ -24,7 +24,7 @@ class UserApiTest extends KanboardForAllTest {
 
   test("getUser") {
     for {
-      response <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
+      response <- Kanboard_Request_getUser(expectedUser2Id).execute
     } yield {
       assert(response.isRight)
       assert(response.exists(_.result.username == expectedUsername2))
@@ -56,7 +56,7 @@ class UserApiTest extends KanboardForAllTest {
 
   test("isActiveUser") {
     for {
-      response <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+      response <- Kanboard_Request_isActiveUser(expectedUser2Id).execute
     } yield {
       assert(response.isRight)
       assert(response.exists(_.result))
@@ -65,9 +65,9 @@ class UserApiTest extends KanboardForAllTest {
 
   test("disableUser") {
     for {
-      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
-      response <- Kanboard_Request_disableUser(expectedUser2Id.toString).execute
-      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id).execute
+      response <- Kanboard_Request_disableUser(expectedUser2Id).execute
+      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id).execute
     } yield {
       assert(responseActiveBefore.isRight)
       assert(response.isRight)
@@ -79,9 +79,9 @@ class UserApiTest extends KanboardForAllTest {
 
   test("enableUser") {
     for {
-      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
-      response <- Kanboard_Request_enableUser(expectedUser2Id.toString).execute
-      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id.toString).execute
+      responseActiveBefore <- Kanboard_Request_isActiveUser(expectedUser2Id).execute
+      response <- Kanboard_Request_enableUser(expectedUser2Id).execute
+      responseActiveAfter <- Kanboard_Request_isActiveUser(expectedUser2Id).execute
     } yield {
       assert(responseActiveBefore.isRight)
       assert(response.isRight)
@@ -93,9 +93,9 @@ class UserApiTest extends KanboardForAllTest {
 
   test("removeUser") {
     for {
-      responseBefore <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
-      response <- Kanboard_Request_removeUser(expectedUser2Id.toString).execute
-      responseAfter <- Kanboard_Request_getUser(expectedUser2Id.toString).execute
+      responseBefore <- Kanboard_Request_getUser(expectedUser2Id).execute
+      response <- Kanboard_Request_removeUser(expectedUser2Id).execute
+      responseAfter <- Kanboard_Request_getUser(expectedUser2Id).execute
     } yield {
       assert(responseBefore.isRight)
       assert(response.isRight)
@@ -103,6 +103,22 @@ class UserApiTest extends KanboardForAllTest {
       assert(response.exists(_.result))
       assert(responseBefore.exists(_.result.username == expectedUsername2))
       assert(responseAfter.exists(_.result == null))
+    }
+  }
+
+
+  test("updateUser") {
+    for {
+      responseBefore <- Kanboard_Request_getUser(expectedUser3Id).execute
+      response <- Kanboard_Request_updateUser(expectedUser3Id, name = Some("Updated Name")).execute
+      responseAfter <- Kanboard_Request_getUser(expectedUser3Id).execute
+    } yield {
+      assert(responseBefore.isRight)
+      assert(response.isRight)
+      assert(responseAfter.isRight)
+      assert(response.exists(_.result))
+      assert(responseBefore.exists(_.result.name == ""))
+      assert(responseAfter.exists(_.result.name == "Updated Name"))
     }
   }
 }

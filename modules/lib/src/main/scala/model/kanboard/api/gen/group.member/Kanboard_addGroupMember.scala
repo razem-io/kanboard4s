@@ -1,5 +1,6 @@
 package model.kanboard.api.gen.group.member
 import model.kanboard.api.KanboardApiCall
+import model.kanboard.api.JsonRPCRequest._
 
 /**
 * GENERATED FILE - Any changes will be overwritten.
@@ -16,10 +17,10 @@ import model.kanboard.api.KanboardApiCall
 * -  Result on failure: **false**
 **/
 
-case class Kanboard_Request_addGroupMember() extends KanboardApiCall[Kanboard_Response_addGroupMember] {
+case class Kanboard_Request_addGroupMember(group_id: Int, user_id: Int) extends KanboardApiCall[Kanboard_Response_addGroupMember] {
   override val rpcMethodName: String = "addGroupMember"
 
-  override val rpcParameters: Seq[(String, String)] = Seq()
+  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("group_id" -> IntParam(group_id), "user_id" -> IntParam(user_id))
 }
 
 case class Kanboard_Response_addGroupMember(result: Boolean)

@@ -1,5 +1,6 @@
 package model.kanboard.api.gen.user
 import model.kanboard.api.KanboardApiCall
+import model.kanboard.api.JsonRPCRequest._
 
 /**
 * GENERATED FILE - Any changes will be overwritten.
@@ -20,10 +21,10 @@ import model.kanboard.api.KanboardApiCall
 * -  Result on failure: **false**
 **/
 
-case class Kanboard_Request_updateUser(id: String, role: String) extends KanboardApiCall[Kanboard_Response_updateUser] {
+case class Kanboard_Request_updateUser(id: Int, username: Option[String] = None, name: Option[String] = None, email: Option[String] = None, role: Option[String] = None) extends KanboardApiCall[Kanboard_Response_updateUser] {
   override val rpcMethodName: String = "updateUser"
 
-  override val rpcParameters: Seq[(String, String)] = Seq("id" -> id, "role" -> role)
+  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("id" -> IntParam(id)) ++ Seq(username.map("username" -> StringParam(_)), name.map("name" -> StringParam(_)), email.map("email" -> StringParam(_)), role.map("role" -> StringParam(_))).flatten
 }
 
 case class Kanboard_Response_updateUser(result: Boolean)

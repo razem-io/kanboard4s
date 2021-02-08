@@ -1,5 +1,6 @@
 package model.kanboard.api.gen.group
 import model.kanboard.api.KanboardApiCall
+import model.kanboard.api.JsonRPCRequest._
 
 /**
 * GENERATED FILE - Any changes will be overwritten.
@@ -15,10 +16,10 @@ import model.kanboard.api.KanboardApiCall
 * -  Result on failure: **false**
 **/
 
-case class Kanboard_Request_removeGroup() extends KanboardApiCall[Kanboard_Response_removeGroup] {
+case class Kanboard_Request_removeGroup(group_id: Int) extends KanboardApiCall[Kanboard_Response_removeGroup] {
   override val rpcMethodName: String = "removeGroup"
 
-  override val rpcParameters: Seq[(String, String)] = Seq()
+  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("group_id" -> IntParam(group_id))
 }
 
 case class Kanboard_Response_removeGroup(result: Boolean)

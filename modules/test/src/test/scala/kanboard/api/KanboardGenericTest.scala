@@ -25,9 +25,7 @@ trait KanboardGenericTest extends AsyncFunSuite  {
     waitStrategy = Wait.forHttp("/")
   )
 
-  import upickle.default.{macroRW, ReadWriter => RW, _}
-  implicit val rw: RW[JsonRPCRequest] = macroRW
-  implicit val rw_Kanboard_Request_createUser: RW[Kanboard_Request_createUser] = macroRW
+  import upickle.default._
 
   private def endpoint = s"http://localhost:${kanboardContainer.mappedPort(80)}/jsonrpc.php"
 

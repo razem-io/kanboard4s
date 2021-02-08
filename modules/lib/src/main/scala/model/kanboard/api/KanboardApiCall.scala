@@ -1,16 +1,17 @@
 package model.kanboard.api
 
 
-import scala.concurrent.{ExecutionContext, Future}
+import model.kanboard.api.JsonRPCRequest.IsJsonRpcParamLike
 import upickle.default._
 
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 trait KanboardApiCall [A] {
 
   val rpcMethodName: String
 
-  val rpcParameters: Seq[(String, String)]
+  val rpcParameters: Seq[(String, IsJsonRpcParamLike)]
 
   def rpcRequest: JsonRPCRequest = JsonRPCRequest (
     rpcMethodName,

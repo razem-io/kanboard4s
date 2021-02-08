@@ -1,5 +1,6 @@
 package model.kanboard.api.gen.user
 import model.kanboard.api.KanboardApiCall
+import model.kanboard.api.JsonRPCRequest._
 
 /**
 * GENERATED FILE - Any changes will be overwritten.
@@ -15,10 +16,10 @@ import model.kanboard.api.KanboardApiCall
 * -  Result on failure: **false**
 **/
 
-case class Kanboard_Request_enableUser(user_id: String) extends KanboardApiCall[Kanboard_Response_enableUser] {
+case class Kanboard_Request_enableUser(user_id: Int) extends KanboardApiCall[Kanboard_Response_enableUser] {
   override val rpcMethodName: String = "enableUser"
 
-  override val rpcParameters: Seq[(String, String)] = Seq("user_id" -> user_id)
+  override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("user_id" -> IntParam(user_id))
 }
 
 case class Kanboard_Response_enableUser(result: Boolean)
