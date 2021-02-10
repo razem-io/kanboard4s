@@ -29,6 +29,6 @@ case class Kanboard_Request_createLdapUser(username: String) extends KanboardApi
 case class Kanboard_Response_createLdapUser(result: Int)
 
 object Kanboard_Response_createLdapUser {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_createLdapUser] = macroRW
 }

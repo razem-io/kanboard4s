@@ -24,12 +24,12 @@ case class Kanboard_Request_getUser(user_id: Int) extends KanboardApiCall[Kanboa
 
 case class Kanboard_Response_getUser_Result(name: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String, email: String, role: String)
 object Kanboard_Response_getUser_Result {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getUser_Result] = macroRW
 }
 case class Kanboard_Response_getUser(result: Kanboard_Response_getUser_Result)
 
 object Kanboard_Response_getUser {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getUser] = macroRW
 }

@@ -24,12 +24,12 @@ case class Kanboard_Request_getGroup(group_id: Int) extends KanboardApiCall[Kanb
 
 case class Kanboard_Response_getGroup_Result(id: String, external_id: String, name: String)
 object Kanboard_Response_getGroup_Result {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getGroup_Result] = macroRW
 }
 case class Kanboard_Response_getGroup(result: Kanboard_Response_getGroup_Result)
 
 object Kanboard_Response_getGroup {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getGroup] = macroRW
 }

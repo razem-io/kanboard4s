@@ -26,6 +26,6 @@ case class Kanboard_Request_createGroup(name: String, external_id: Option[String
 case class Kanboard_Response_createGroup(result: Int)
 
 object Kanboard_Response_createGroup {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_createGroup] = macroRW
 }

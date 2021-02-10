@@ -25,6 +25,6 @@ case class Kanboard_Request_isActiveUser(user_id: Int) extends KanboardApiCall[K
 case class Kanboard_Response_isActiveUser(result: Boolean)
 
 object Kanboard_Response_isActiveUser {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_isActiveUser] = macroRW
 }

@@ -1,16 +1,16 @@
 package model.kanboard.api
 
 import model.kanboard.api.JsonRPCRequest.IsJsonRpcParamLike
-import upickle.default.{macroRW, readwriter, ReadWriter => RW}
+import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
 
 case class JsonRPCRequest(id: Long, jsonrpc: String, method: String, params: Map[String, IsJsonRpcParamLike]) {
-  import upickle.default._
+  import model.kanboard.api.Kanboard4sPickler._
   def toJson: String = write(this)
 }
 
 object JsonRPCRequest {
 
-  implicit val rw_IsJsonRpcParamLike: RW[IsJsonRpcParamLike] = readwriter[String].bimap[IsJsonRpcParamLike](
+  implicit val rw_IsJsonRpcParamLike: RW[IsJsonRpcParamLike] = model.kanboard.api.Kanboard4sPickler.readwriter[String].bimap[IsJsonRpcParamLike](
     {
       case StringParam(s) => s"$s"
       case IntParam(i) => i.toString

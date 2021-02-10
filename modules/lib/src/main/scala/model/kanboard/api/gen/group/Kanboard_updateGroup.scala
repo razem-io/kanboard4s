@@ -27,6 +27,6 @@ case class Kanboard_Request_updateGroup(group_id: Int, name: Option[String] = No
 case class Kanboard_Response_updateGroup(result: Boolean)
 
 object Kanboard_Response_updateGroup {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_updateGroup] = macroRW
 }

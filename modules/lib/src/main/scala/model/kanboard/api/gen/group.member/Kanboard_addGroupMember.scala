@@ -26,6 +26,6 @@ case class Kanboard_Request_addGroupMember(group_id: Int, user_id: Int) extends 
 case class Kanboard_Response_addGroupMember(result: Boolean)
 
 object Kanboard_Response_addGroupMember {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_addGroupMember] = macroRW
 }

@@ -24,12 +24,12 @@ case class Kanboard_Request_getUserByName(username: String) extends KanboardApiC
 
 case class Kanboard_Response_getUserByName_Result(name: String, username: String, notifications_enabled: String, is_ldap_user: String, id: String, google_id: Option[String], github_id: Option[String], password: String, email: String, role: String)
 object Kanboard_Response_getUserByName_Result {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getUserByName_Result] = macroRW
 }
 case class Kanboard_Response_getUserByName(result: Kanboard_Response_getUserByName_Result)
 
 object Kanboard_Response_getUserByName {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getUserByName] = macroRW
 }

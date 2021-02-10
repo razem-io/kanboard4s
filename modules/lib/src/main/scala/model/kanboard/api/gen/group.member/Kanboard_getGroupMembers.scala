@@ -24,12 +24,12 @@ case class Kanboard_Request_getGroupMembers(group_id: Int) extends KanboardApiCa
 
 case class Kanboard_Response_getGroupMembers_Entries_Result(group_id: String, name: Option[String], notifications_filter: String, username: String, timezone: Option[String], notifications_enabled: String, user_id: String, is_project_admin: String, is_ldap_user: String, id: String, language: Option[String], disable_login_form: String, lock_expiration_date: String, gitlab_id: Option[String], nb_failed_login: String, email: Option[String], role: String)
 object Kanboard_Response_getGroupMembers_Entries_Result {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getGroupMembers_Entries_Result] = macroRW
 }
 case class Kanboard_Response_getGroupMembers(result: Array[Kanboard_Response_getGroupMembers_Entries_Result])
 
 object Kanboard_Response_getGroupMembers {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_getGroupMembers] = macroRW
 }

@@ -2,7 +2,7 @@ package model.kanboard.api
 
 
 import model.kanboard.api.JsonRPCRequest.IsJsonRpcParamLike
-import upickle.default._
+import model.kanboard.api.Kanboard4sPickler._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try

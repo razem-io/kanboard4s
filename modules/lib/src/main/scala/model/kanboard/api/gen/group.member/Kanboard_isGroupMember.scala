@@ -26,6 +26,6 @@ case class Kanboard_Request_isGroupMember(group_id: Int, user_id: Int) extends K
 case class Kanboard_Response_isGroupMember(result: Boolean)
 
 object Kanboard_Response_isGroupMember {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_isGroupMember] = macroRW
 }

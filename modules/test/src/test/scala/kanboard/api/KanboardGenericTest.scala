@@ -2,8 +2,7 @@ package kanboard.api
 
 import com.dimafeng.testcontainers.{ForAllTestContainer, ForEachTestContainer, GenericContainer}
 import model.kanboard.api.JsonRPCRequest
-import model.kanboard.api.gen.user.Kanboard_Request_createUser
-import okhttp3.{Credentials, MediaType, OkHttpClient, Request, RequestBody}
+import okhttp3._
 import org.scalatest.funsuite.AsyncFunSuite
 import org.testcontainers.containers.wait.strategy.Wait
 
@@ -25,7 +24,7 @@ trait KanboardGenericTest extends AsyncFunSuite  {
     waitStrategy = Wait.forHttp("/")
   )
 
-  import upickle.default._
+  import model.kanboard.api.Kanboard4sPickler._
 
   private def endpoint = s"http://localhost:${kanboardContainer.mappedPort(80)}/jsonrpc.php"
 

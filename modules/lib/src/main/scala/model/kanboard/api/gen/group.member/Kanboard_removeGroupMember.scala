@@ -26,6 +26,6 @@ case class Kanboard_Request_removeGroupMember(group_id: Int, user_id: Int) exten
 case class Kanboard_Response_removeGroupMember(result: Boolean)
 
 object Kanboard_Response_removeGroupMember {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_removeGroupMember] = macroRW
 }

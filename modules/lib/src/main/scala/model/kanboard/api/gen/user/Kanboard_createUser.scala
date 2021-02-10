@@ -30,6 +30,6 @@ case class Kanboard_Request_createUser(username: String, password: String, name:
 case class Kanboard_Response_createUser(result: Int)
 
 object Kanboard_Response_createUser {
-  import upickle.default.{ReadWriter => RW, macroRW}
+  import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
   implicit val rw: RW[Kanboard_Response_createUser] = macroRW
 }
