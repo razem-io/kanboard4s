@@ -9,10 +9,6 @@ import scala.util.matching.Regex
 
 object GenClasses {
 
-  """(\w*)\n-{3,}([\s\S]*?)\nRequest example:[^{]*([\s\S]*?)\nResponse example:[\s\S]*?(\{[^}]*})"""
-
-  val docRegex1: Regex = """(\w*)(\r\n|\r|\n)-{3,}([\s\S]*?)\nRequest example:[^{]*([\s\S]*?)\nResponse example:[^{]*(\{[^}]*[}|\W]+)""".r
-
 
   def main(args: Array[String]): Unit = {
 
@@ -20,6 +16,8 @@ object GenClasses {
       "user" -> "submodules/kanboard_documentation/source/api/user_procedures.rst",
       "group" -> "submodules/kanboard_documentation/source/api/group_procedures.rst",
       "group.member" -> "submodules/kanboard_documentation/source/api/group_member_procedures.rst",
+      //"tags" -> "submodules/kanboard_documentation/source/api/tags_procedures.rst",
+      //"projects" -> "submodules/kanboard_documentation/source/api/project_procedures.rst",
     ).map(t => t._1 -> t._2.toFile)
 
     val basePackageName = "model.kanboard.api.gen"

@@ -24,12 +24,12 @@ trait KanboardApiCall [A] {
 
   def execute(implicit
               ec: ExecutionContext,
-              jsonFormat: Reader[A],
+              jsonReader: Reader[A],
               executeRequest: JsonRPCRequest => Future[String]
              ): Future[Either[ResponseError, A]] =
     executeRequest(rpcRequest)
-      .map(b => {
-        parseRpcResponse(b).toEither.left.map(ResponseError(b, _))
+      .map(rawJson => {
+        parseRpcResponse(rawJson).toEither.left.map(ResponseError(rawJson, _))
       })
 
   def executeF(implicit

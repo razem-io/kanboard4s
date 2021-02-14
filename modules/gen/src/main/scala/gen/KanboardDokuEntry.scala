@@ -13,8 +13,10 @@ object KanboardDokuEntry {
     val jsonParamWrapper: String = jsonParamWrapper(name)
 
     def jsonParamWrapper(name: String): String = foundType match {
+      case "Alphanumeric string" => s"StringParam($name)"
       case "String" => s"StringParam($name)"
       case "Int" => s"IntParam($name)"
+      case "Array[String]" => s"ArrayStringParam($name)"
     }
   }
 
@@ -32,6 +34,8 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
 
     val foundType = additionalInfo.head.capitalize match {
       case "Integer" => "Int"
+      case "[]string" => "Array[String]"
+      case "Alphanumeric string" => "String"
       case x => x
     }
     val optional = additionalInfo.lift(1).exists(_.contains("optional"))
@@ -92,7 +96,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
       val params: Map[String, String] = r.obj.map{ t => val (name, value) = t
         if(value.strOpt.isDefined) name -> "String"
         else if(value.isNull) name -> "Option[String]"
-        else throw new NotImplementedError()
+        else throw new NotImplementedError(value.toString())
       }.toMap
       val resultClassName = className + "_Result"
       val s1 = s"""case class $resultClassName(${params.map(t => t._1 + ": " + t._2).mkString(", ")})
