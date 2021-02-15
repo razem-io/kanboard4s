@@ -17,6 +17,7 @@ object KanboardDokuEntry {
       case "String" => s"StringParam($name)"
       case "Int" => s"IntParam($name)"
       case "Array[String]" => s"ArrayStringParam($name)"
+      case "Boolean" => s"BooleanParam($name)"
     }
   }
 
@@ -113,6 +114,8 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
 
       companionClass + "\n" +
         s"""case class $className(result: Array[$entryResultClassName])""".stripMargin
+    } else if(r.strOpt.isDefined) {
+      s"""case class $className(result: String)""".stripMargin
     }  else {
       throw new NotImplementedError(r.toString())
     }

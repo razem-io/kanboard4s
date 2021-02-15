@@ -9,6 +9,11 @@ import scala.util.matching.Regex
 
 object GenClasses {
 
+  //TODO
+  //tags_procedures.rst: Error in generated class Kanboard_getTaskTags.scala: "1: String, 2: String" as param
+  //project_procedures.rst: Fails because of nested "url" array in response example
+  //project_permission_procedures.rst: Error in generated class Kanboard_getProjectUsers.scala: "1: String" as param
+  //task_procedures.rst: Fails because of nested "color" array in response example
 
   def main(args: Array[String]): Unit = {
 
@@ -17,7 +22,10 @@ object GenClasses {
       "group" -> "submodules/kanboard_documentation/source/api/group_procedures.rst",
       "group.member" -> "submodules/kanboard_documentation/source/api/group_member_procedures.rst",
       //"tags" -> "submodules/kanboard_documentation/source/api/tags_procedures.rst",
-      //"projects" -> "submodules/kanboard_documentation/source/api/project_procedures.rst",
+      //"project" -> "submodules/kanboard_documentation/source/api/project_procedures.rst",
+      //"project.permission" -> "submodules/kanboard_documentation/source/api/project_permission_procedures.rst",
+      "column" -> "submodules/kanboard_documentation/source/api/column_procedures.rst",
+      //"task" -> "submodules/kanboard_documentation/source/api/task_procedures.rst",
     ).map(t => t._1 -> t._2.toFile)
 
     val basePackageName = "model.kanboard.api.gen"

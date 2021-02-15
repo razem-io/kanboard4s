@@ -15,6 +15,7 @@ object JsonRPCRequest {
       case StringParam(s) => s"$s"
       case IntParam(i) => i.toString
       case ArrayStringParam(i) => i.mkString("[", ",", "]")
+      case BooleanParam(b) => b.toString
     },
     _ => throw new NotImplementedError()
   )
@@ -28,6 +29,7 @@ object JsonRPCRequest {
   case class StringParam(s: String) extends IsJsonRpcParamLike
   case class IntParam(i: Int) extends IsJsonRpcParamLike
   case class ArrayStringParam(aS: Array[String]) extends IsJsonRpcParamLike
+  case class BooleanParam(b: Boolean) extends IsJsonRpcParamLike
 
   sealed trait IsJsonRpcParamLike
 }
