@@ -24,7 +24,7 @@ object KanboardDokuEntry {
   val requestParamsRegex: Regex = """-\s+\*\*(\w*)\*\*([\s\S]*?)\(([\s\S]*?)\)""".r
 }
 
-case class KanboardDokuEntry(methodName: String, docu: String, request: String, response: String, packageName: String) {
+case class KanboardDokuEntry(methodName: String, docu: String, request: String, response: String, responseSuccess: String, responseFailure: String, packageName: String) {
   import KanboardDokuEntry._
 
   //  def requestParams: Set[String] = Try(ujson.read(request).obj("params")).map(_.obj.keys.toSet).getOrElse(Set.empty)
@@ -81,9 +81,13 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
   }
 
   def caseClassResponse: String = {
-    val r: Value = ujson.read(response).obj("result")
+    if(responseSuccess.contains("Dictionary of")) {
+      s"""case class $classNameResponse(result: Map[String, String])""".stripMargin
+    } else {
+      val r: Value = ujson.read(response).obj("result")
 
-    matchResult(r) + "\n"
+      matchResult(r) + "\n"
+    }
   }
 
   def objectResponse: String = genJsonFormatObject(classNameResponse)
@@ -99,6 +103,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
         else if(value.isNull) name -> "Option[String]"
         else throw new NotImplementedError(value.toString())
       }.toMap
+
       val resultClassName = className + "_Result"
       val s1 = s"""case class $resultClassName(${params.map(t => t._1 + ": " + t._2).mkString(", ")})
          |${genJsonFormatObject(resultClassName)}""".stripMargin
@@ -116,7 +121,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
         s"""case class $className(result: Array[$entryResultClassName])""".stripMargin
     } else if(r.strOpt.isDefined) {
       s"""case class $className(result: String)""".stripMargin
-    }  else {
+    } else {
       throw new NotImplementedError(r.toString())
     }
   }

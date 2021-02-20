@@ -23,7 +23,7 @@ object GenClasses {
       "group.member" -> "submodules/kanboard_documentation/source/api/group_member_procedures.rst",
       //"tags" -> "submodules/kanboard_documentation/source/api/tags_procedures.rst",
       //"project" -> "submodules/kanboard_documentation/source/api/project_procedures.rst",
-      //"project.permission" -> "submodules/kanboard_documentation/source/api/project_permission_procedures.rst",
+      "project.permission" -> "submodules/kanboard_documentation/source/api/project_permission_procedures.rst",
       "column" -> "submodules/kanboard_documentation/source/api/column_procedures.rst",
       //"task" -> "submodules/kanboard_documentation/source/api/task_procedures.rst",
     ).map(t => t._1 -> t._2.toFile)
@@ -42,6 +42,9 @@ object GenClasses {
       val r = methods.zip(docuParts).map(t => {
         val (method, content) = t
 
+        val responseSuccess = content.split("Result on success:").last.split('\n').head.replace("*", "").trim
+        val responseFailure = content.split("Result on failure:").last.split('\n').head.replace("*", "").trim
+
         val requestSplit = content.split("Request example:")
 
         val docu = requestSplit.head.trim
@@ -56,6 +59,8 @@ object GenClasses {
           docu = docu,
           request = requestJson,
           response = responseJson,
+          responseSuccess = responseSuccess,
+          responseFailure = responseFailure,
           packageName = packageName
         )
       })
