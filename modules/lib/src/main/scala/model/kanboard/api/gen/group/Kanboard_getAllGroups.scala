@@ -19,12 +19,12 @@ case class Kanboard_Request_getAllGroups() extends KanboardApiCall[Kanboard_Resp
   override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq()
 }
 
-case class Kanboard_Response_getAllGroups_Entries_Result(id: String, external_id: String, name: String)
-object Kanboard_Response_getAllGroups_Entries_Result {
+case class Kanboard_Response_getAllGroups_Entries(id: String, external_id: String, name: String)
+object Kanboard_Response_getAllGroups_Entries {
   import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
-  implicit val rw: RW[Kanboard_Response_getAllGroups_Entries_Result] = macroRW
+  implicit val rw: RW[Kanboard_Response_getAllGroups_Entries] = macroRW
 }
-case class Kanboard_Response_getAllGroups(result: Array[Kanboard_Response_getAllGroups_Entries_Result])
+case class Kanboard_Response_getAllGroups(result: Array[Kanboard_Response_getAllGroups_Entries])
 
 object Kanboard_Response_getAllGroups {
   import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}

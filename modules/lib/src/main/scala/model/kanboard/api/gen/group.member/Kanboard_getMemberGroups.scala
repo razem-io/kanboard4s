@@ -22,12 +22,12 @@ case class Kanboard_Request_getMemberGroups(user_id: Int) extends KanboardApiCal
   override val rpcParameters: Seq[(String, IsJsonRpcParamLike)] = Seq("user_id" -> IntParam(user_id))
 }
 
-case class Kanboard_Response_getMemberGroups_Entries_Result(id: String, name: String)
-object Kanboard_Response_getMemberGroups_Entries_Result {
+case class Kanboard_Response_getMemberGroups_Entries(id: String, name: String)
+object Kanboard_Response_getMemberGroups_Entries {
   import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}
-  implicit val rw: RW[Kanboard_Response_getMemberGroups_Entries_Result] = macroRW
+  implicit val rw: RW[Kanboard_Response_getMemberGroups_Entries] = macroRW
 }
-case class Kanboard_Response_getMemberGroups(result: Array[Kanboard_Response_getMemberGroups_Entries_Result])
+case class Kanboard_Response_getMemberGroups(result: Array[Kanboard_Response_getMemberGroups_Entries])
 
 object Kanboard_Response_getMemberGroups {
   import model.kanboard.api.Kanboard4sPickler.{ReadWriter => RW, macroRW}

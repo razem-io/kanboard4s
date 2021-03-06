@@ -17,6 +17,7 @@ object KanboardDokuEntry {
       case "String" => s"StringParam($name)"
       case "Int" => s"IntParam($name)"
       case "Array[String]" => s"ArrayStringParam($name)"
+      case "Array[Int]" => s"ArrayIntParam($name)"
       case "Boolean" => s"BooleanParam($name)"
     }
   }
@@ -24,7 +25,7 @@ object KanboardDokuEntry {
   val requestParamsRegex: Regex = """-\s+\*\*(\w*)\*\*([\s\S]*?)\(([\s\S]*?)\)""".r
 }
 
-case class KanboardDokuEntry(methodName: String, docu: String, request: String, response: String, responseSuccess: String, responseFailure: String, packageName: String) {
+case class KanboardDokuEntry(methodName: String, docu: String, request: String, response: String, responseSuccess: String, responseFailure: String, packageName: String, maybeException: Option[Exception] = None) {
   import KanboardDokuEntry._
 
   //  def requestParams: Set[String] = Try(ujson.read(request).obj("params")).map(_.obj.keys.toSet).getOrElse(Set.empty)
@@ -35,6 +36,7 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
 
     val foundType = additionalInfo.head.capitalize match {
       case "Integer" => "Int"
+      case "Integer array" => "Array[Int]"
       case "[]string" => "Array[String]"
       case "Alphanumeric string" => "String"
       case x => x
@@ -81,7 +83,9 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
   }
 
   def caseClassResponse: String = {
-    if(responseSuccess.contains("Dictionary of")) {
+    if(maybeException.exists(_.responseParameters.nonEmpty)) {
+      s"""case class $classNameResponse(${maybeException.get.responseParameters.mkString(", ")})""".stripMargin
+    } else if(responseSuccess.contains("Dictionary of")) {
       s"""case class $classNameResponse(result: Map[String, String])""".stripMargin
     } else {
       val r: Value = ujson.read(response).obj("result")
@@ -93,18 +97,29 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
   def objectResponse: String = genJsonFormatObject(classNameResponse)
 
   def matchResult(r: Value, className: String = classNameResponse, returnResultClass: Boolean = true): String = {
-    if(r.numOpt.isDefined) {
+    var additionalStuff: String = ""
+
+    val s = if(r.numOpt.isDefined) {
       s"""case class $className(result: Int)""".stripMargin
     } else if(r.boolOpt.isDefined) {
       s"""case class $className(result: Boolean)""".stripMargin
     } else if(r.objOpt.isDefined) {
       val params: Map[String, String] = r.obj.map{ t => val (name, value) = t
         if(value.strOpt.isDefined) name -> "String"
+        else if(value.objOpt.isDefined) name -> {
+          val nestedClassName = classNameResponse + "_" + name.capitalize
+
+          additionalStuff += "\n" + matchResult(value, className = nestedClassName, returnResultClass = false)
+
+          nestedClassName
+        }
         else if(value.isNull) name -> "Option[String]"
         else throw new NotImplementedError(value.toString())
       }.toMap
 
-      val resultClassName = className + "_Result"
+      val resultClassName = className + {
+        if(returnResultClass) "_Result" else ""
+      }
       val s1 = s"""case class $resultClassName(${params.map(t => t._1 + ": " + t._2).mkString(", ")})
          |${genJsonFormatObject(resultClassName)}""".stripMargin
       if(returnResultClass)
@@ -114,16 +129,17 @@ case class KanboardDokuEntry(methodName: String, docu: String, request: String, 
         s1
     } else if(r.arrOpt.isDefined) {
       val entryClassName = className + "_Entries"
-      val entryResultClassName = className + "_Entries_Result"
       val companionClass = matchResult(r.arr.head, entryClassName, returnResultClass = false)
 
       companionClass + "\n" +
-        s"""case class $className(result: Array[$entryResultClassName])""".stripMargin
+        s"""case class $className(result: Array[$entryClassName])""".stripMargin
     } else if(r.strOpt.isDefined) {
       s"""case class $className(result: String)""".stripMargin
     } else {
       throw new NotImplementedError(r.toString())
     }
+
+    s + additionalStuff
   }
 
   def genJsonFormatObject(objectName: String): String = s"""object $objectName {

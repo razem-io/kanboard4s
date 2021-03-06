@@ -29,6 +29,7 @@ object JsonRPCRequest {
   case class StringParam(s: String) extends IsJsonRpcParamLike
   case class IntParam(i: Int) extends IsJsonRpcParamLike
   case class ArrayStringParam(aS: Array[String]) extends IsJsonRpcParamLike
+  case class ArrayIntParam(aS: Array[Int]) extends IsJsonRpcParamLike
   case class BooleanParam(b: Boolean) extends IsJsonRpcParamLike
 
   sealed trait IsJsonRpcParamLike

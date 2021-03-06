@@ -4,8 +4,8 @@ package gen
 import better.files._
 
 import java.nio.charset.StandardCharsets
-import scala.util.matching.Regex
 
+case class ApiEntry(subPackage: String, docuFile: File, exceptions: Seq[Exception]= Nil)
 
 object GenClasses {
 
@@ -17,30 +17,32 @@ object GenClasses {
 
   def main(args: Array[String]): Unit = {
 
-    val apisToGen = Seq(
-      "user" -> "submodules/kanboard_documentation/source/api/user_procedures.rst",
-      "group" -> "submodules/kanboard_documentation/source/api/group_procedures.rst",
-      "group.member" -> "submodules/kanboard_documentation/source/api/group_member_procedures.rst",
-      //"tags" -> "submodules/kanboard_documentation/source/api/tags_procedures.rst",
-      //"project" -> "submodules/kanboard_documentation/source/api/project_procedures.rst",
-      "project.permission" -> "submodules/kanboard_documentation/source/api/project_permission_procedures.rst",
-      "column" -> "submodules/kanboard_documentation/source/api/column_procedures.rst",
+    val baseApiPath = "submodules/kanboard_documentation/source/api".toFile
+    val apisToGen: Seq[ApiEntry] = Seq(
+      ApiEntry("user", baseApiPath / "user_procedures.rst"),
+      ApiEntry("group", baseApiPath / "group_procedures.rst"),
+      ApiEntry("group.member", baseApiPath / "group_member_procedures.rst"),
+      ApiEntry("tags", baseApiPath / "tags_procedures.rst"),
+      ApiEntry("project", baseApiPath / "project_procedures.rst", Gen.projectProceduresExceptions),
+      ApiEntry("project.permission", baseApiPath / "project_permission_procedures.rst"),
+      ApiEntry("column", baseApiPath / "column_procedures.rst"),
       //"task" -> "submodules/kanboard_documentation/source/api/task_procedures.rst",
-    ).map(t => t._1 -> t._2.toFile)
+    )
 
     val basePackageName = "model.kanboard.api.gen"
     val genFolder_init = "modules/lib/src/main/scala/".toFile / basePackageName.replace('.', '/')
     genFolder_init.delete(swallowIOExceptions = true)
 
-    apisToGen.foreach { t => val (subPackage, docuFile) = t
-      val docuContent = docuFile.contentAsString(StandardCharsets.UTF_8).stripMargin
+    apisToGen.foreach { apiEntry =>
+      val subPackage = apiEntry.subPackage
+      val docuContent = apiEntry.docuFile.contentAsString(StandardCharsets.UTF_8).stripMargin
 
       val packageName = basePackageName + "." + subPackage
       val methods: List[String] = """(\w*)(\r\n|\r|\n)-{3,}""".r.findAllMatchIn(docuContent).map(_.group(1)).toList
       val docuParts =  docuContent.split("""(\w*)(\r\n|\r|\n)-{3,}""").tail
 
       val r = methods.zip(docuParts).map(t => {
-        val (method, content) = t
+        val (methodName, content) = t
 
         val responseSuccess = content.split("Result on success:").last.split('\n').head.replace("*", "").trim
         val responseFailure = content.split("Result on failure:").last.split('\n').head.replace("*", "").trim
@@ -55,13 +57,14 @@ object GenClasses {
         val responseJson = "{" + responseSplit.last.split('{').tail.mkString(" { ").trim
 
         KanboardDokuEntry(
-          methodName = method,
+          methodName = methodName,
           docu = docu,
           request = requestJson,
           response = responseJson,
           responseSuccess = responseSuccess,
           responseFailure = responseFailure,
-          packageName = packageName
+          packageName = packageName,
+          maybeException = apiEntry.exceptions.find(_.methodName == methodName)
         )
       })
 
