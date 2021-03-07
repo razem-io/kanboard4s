@@ -9,12 +9,6 @@ case class ApiEntry(subPackage: String, docuFile: File, exceptions: Seq[Exceptio
 
 object GenClasses {
 
-  //TODO
-  //tags_procedures.rst: Error in generated class Kanboard_getTaskTags.scala: "1: String, 2: String" as param
-  //project_procedures.rst: Fails because of nested "url" array in response example
-  //project_permission_procedures.rst: Error in generated class Kanboard_getProjectUsers.scala: "1: String" as param
-  //task_procedures.rst: Fails because of nested "color" array in response example
-
   def main(args: Array[String]): Unit = {
 
     val baseApiPath = "submodules/kanboard_documentation/source/api".toFile
@@ -26,7 +20,7 @@ object GenClasses {
       ApiEntry("project", baseApiPath / "project_procedures.rst", Gen.projectProceduresExceptions),
       ApiEntry("project.permission", baseApiPath / "project_permission_procedures.rst"),
       ApiEntry("column", baseApiPath / "column_procedures.rst"),
-      //"task" -> "submodules/kanboard_documentation/source/api/task_procedures.rst",
+      ApiEntry("task", baseApiPath / "task_procedures.rst"),
     )
 
     val basePackageName = "model.kanboard.api.gen"
